@@ -19,7 +19,7 @@ public class TriviaApp {
         Scanner keyboard = new Scanner(System.in);
         AnswerBucket answerBucket = new AnswerBucket();
 
-        TextAndASCIIArt.welcomeUser(QUESTION_AMOUNT);
+        welcomeUser(QUESTION_AMOUNT);
         System.out.println("To start type 'start'");
         keyboard.next();
         long timeAtBeginning = System.currentTimeMillis();
@@ -89,8 +89,8 @@ public class TriviaApp {
             displayVictoryMessage();
         } else {
             displayDefeatMessage();
-            displayLastAnswer(bucket);
+            displayLastAnswer(bucket.getLastAnswer());
         }
-        displayStatistics(bucket, QUESTION_AMOUNT, timeAtBeginning, System.currentTimeMillis());
+        displayStatistics(bucket.getAnswersAmount(), QUESTION_AMOUNT, timeAtBeginning, System.currentTimeMillis());
     }
 }

@@ -15,7 +15,7 @@ public class AnswerBucket {
         return answerBucket.size();
     }
 
-    TriviaQuestion getLastAnswer() {
+    public TriviaQuestion getLastAnswer() {
         return answerBucket.get(answerBucket.size() - 1);
     }
 }

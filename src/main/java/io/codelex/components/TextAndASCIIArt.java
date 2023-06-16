@@ -2,12 +2,11 @@ package io.codelex.components;
 
 public class TextAndASCIIArt {
 
-    public static void displayStatistics(AnswerBucket bucket, int QUESTION_AMOUNT, long start, long end) {
+    public static void displayStatistics(int answerAmount, int QUESTION_AMOUNT, long start, long end) {
         System.out.println("-STATISTICS:");
-        System.out.println("--Out of " + QUESTION_AMOUNT + " questions, you answered " + bucket.getAnswersAmount());
+        System.out.println("--Out of " + QUESTION_AMOUNT + " questions, you answered " + answerAmount);
         System.out.println("--It took you " + calculateTimeElapsed(start, end) + " seconds");
     }
-
     private static float calculateTimeElapsed(long start, long end) {
         float msec = end - start;
         return msec / 1000f;
@@ -49,8 +48,7 @@ public class TextAndASCIIArt {
                 """);
     }
 
-    public static void displayLastAnswer(AnswerBucket bucket) {
-        TriviaQuestion answer = bucket.getLastAnswer();
+    public static void displayLastAnswer(TriviaQuestion answer) {
         System.out.println("-Last trivia was:");
         System.out.println("--Question: " + answer.getTriviaQuestion());
         System.out.println("--Correct answer: " + answer.getNumber());
