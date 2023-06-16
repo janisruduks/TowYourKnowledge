@@ -4,10 +4,22 @@ import java.util.Scanner;
 
 public class TextAndASCIIArt {
 
-    public static void seeQuestionsPrompt(Scanner keyboard, AnswerBucket bucket) {
-        System.out.println("To see questions and answers type 'see'");
+    public static void displayQuestionPromptAndDisplayStatistics(
+            Scanner keyboard, int QUESTION_AMOUNT, AnswerBucket bucket, long start, long end) {
+        System.out.println("To see last question and statistics type 'see'");
         keyboard.next();
-        bucket.displayBucket();
+        displayStatistics(bucket, QUESTION_AMOUNT, start, end);
+    }
+
+    private static void displayStatistics(AnswerBucket bucket, int QUESTION_AMOUNT, long start, long end) {
+        System.out.println("STATISTICS:");
+        System.out.println("Out of " + QUESTION_AMOUNT + " questions, you answered " + bucket.getAnswersAmount());
+        System.out.println("It took you " + calculateTimeElapsed(start, end) + " seconds");
+    }
+
+    private static float calculateTimeElapsed(long start, long end) {
+        float msec = end - start;
+        return msec / 1000f;
     }
 
     public static void welcomeUser(int QUESTION_AMOUNT) {

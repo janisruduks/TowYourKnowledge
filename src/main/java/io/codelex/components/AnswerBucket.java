@@ -11,16 +11,19 @@ public class AnswerBucket {
         answerBucket.add(question);
     }
 
-    public void displayBucket() {
-        int index = 1;
-        for (TriviaQuestion answer : answerBucket) {
-            System.out.println("---".repeat(20));
-            System.out.println(index + ". Question: " + answer.getTriviaQuestion());
-            System.out.println("Correct answer: " + answer.getNumber());
-            System.out.println("Answered correctly: " + answer.isAnsweredCorrectly());
-            System.out.println("Your answer: " + answer.getUserAnswer());
-            System.out.println("---".repeat(20));
-            index++;
-        }
+    public int getAnswersAmount() {
+        return answerBucket.size();
+    }
+
+    public void displayLastAnswer() {
+        TriviaQuestion answer = getLastAnswer();
+        System.out.println("Last question was:");
+        System.out.println("Question: " + answer.getTriviaQuestion());
+        System.out.println("Correct answer: " + answer.getNumber());
+        System.out.println("Your answer: " + answer.getUserAnswer());
+    }
+
+    private TriviaQuestion getLastAnswer() {
+        return answerBucket.get(answerBucket.size() - 1);
     }
 }

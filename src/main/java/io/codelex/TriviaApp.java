@@ -1,7 +1,7 @@
 package io.codelex;
 
-import io.codelex.components.TextAndASCIIArt;
 import io.codelex.components.AnswerBucket;
+import io.codelex.components.TextAndASCIIArt;
 import io.codelex.components.TriviaApi;
 import io.codelex.components.TriviaQuestion;
 
@@ -9,17 +9,16 @@ import java.util.InputMismatchException;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class TriviaApp {
+import static io.codelex.Config.QUESTION_AMOUNT;
+import static io.codelex.Config.cheatMode;
+import static io.codelex.components.TextAndASCIIArt.*;
 
-    private static final int QUESTION_AMOUNT = 20;
-    private static final boolean cheatMode = true;
+public class TriviaApp {
 
     private static int answeredQuestions = 0;
     private static boolean answeredWrong = false;
 
-    // Need to fix duplicate answer numbers...
     public static void main(String[] args) {
-
         Scanner keyboard = new Scanner(System.in);
         AnswerBucket answerBucket = new AnswerBucket();
 
@@ -27,10 +26,12 @@ public class TriviaApp {
         System.out.println("To start type 'start'");
         keyboard.next();
 
+        long timeAtBeginning = System.currentTimeMillis();
+
         while (!answeredWrong && answeredQuestions != QUESTION_AMOUNT) {
             answerTheQuestion(keyboard, validateTriviaQuestion(TriviaApi.getTriviaQuestion()), answerBucket);
         }
-        endPhase(answerBucket, keyboard);
+        endGame(answerBucket, keyboard, timeAtBeginning);
     }
 
     private static void answerTheQuestion(Scanner keyboard, TriviaQuestion question, AnswerBucket bucket) {
@@ -41,10 +42,14 @@ public class TriviaApp {
     }
 
     private static void showQuestion(TriviaQuestion question) {
+        displayCheat(question);
+        System.out.println("-Question " + (answeredQuestions + 1) + ". " + question.getTriviaQuestion());
+    }
+
+    private static void displayCheat(TriviaQuestion question) {
         if (cheatMode) {
             System.out.println(question.getNumber());
         }
-        System.out.println("-Question " + (answeredQuestions + 1) + ". " + question.getTriviaQuestion());
     }
 
     private static void prepareAndDisplayAnswers(TriviaQuestion question) {
@@ -92,15 +97,20 @@ public class TriviaApp {
         }
     }
 
-    private static void endPhase(AnswerBucket bucket, Scanner keyboard) {
+    private static void endGame(AnswerBucket bucket, Scanner keyboard, long timeAtBeginning) {
         if (answeredQuestions == QUESTION_AMOUNT) {
             System.out.println("You got your car back!");
-            TextAndASCIIArt.displayCarWonASCII();
-            TextAndASCIIArt.seeQuestionsPrompt(keyboard, bucket);
+            displayCarWonASCII();
+            displayQuestionPromptAndDisplayStatistics(
+                    keyboard, QUESTION_AMOUNT, bucket, timeAtBeginning, System.currentTimeMillis()
+            );
         } else {
             System.out.println("You didn't guess correctly...");
-            TextAndASCIIArt.displayCarLostASCII();
-            TextAndASCIIArt.seeQuestionsPrompt(keyboard, bucket);
+            displayCarLostASCII();
+            displayQuestionPromptAndDisplayStatistics(
+                    keyboard, QUESTION_AMOUNT, bucket, timeAtBeginning, System.currentTimeMillis()
+            );
+            bucket.displayLastAnswer();
         }
     }
 }

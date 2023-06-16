@@ -2,14 +2,12 @@ package io.codelex.components;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
+import static io.codelex.Config.POSSIBLE_ANSWERS;
 
 public class TriviaQuestion {
 
-    private static final int POSSIBLE_ANSWERS = 3;
     @JsonProperty("text")
     private String triviaQuestion;
     private long number;
@@ -28,11 +26,10 @@ public class TriviaQuestion {
     }
 
     public String getTriviaQuestion() {
+        if (number <= 0) {
+            return triviaQuestion.replaceFirst(String.valueOf(Math.abs(number)), "What");
+        }
         return triviaQuestion.replaceFirst(String.valueOf(number), "What");
-    }
-
-    public boolean isAnsweredCorrectly() {
-        return answeredCorrectly;
     }
 
     public void setAnsweredCorrectly(boolean answeredCorrectly) {
@@ -40,11 +37,12 @@ public class TriviaQuestion {
     }
 
     private List<Long> generateAnswers() {
-        List<Long> listOfAnswers = new ArrayList<>();
-        listOfAnswers.add(number);
-        for (int i = 1; i < POSSIBLE_ANSWERS; i++) {
-            listOfAnswers.add(generateNumberCloseToAnswer());
+        Set<Long> setOfNumbers = new HashSet<>();
+        setOfNumbers.add(number);
+        while (setOfNumbers.size() < POSSIBLE_ANSWERS) {
+            setOfNumbers.add(generateNumberCloseToAnswer());
         }
+        List<Long> listOfAnswers = new ArrayList<>(setOfNumbers);
         Collections.shuffle(listOfAnswers);
         return listOfAnswers;
     }
@@ -52,11 +50,7 @@ public class TriviaQuestion {
     private long generateNumberCloseToAnswer() {
         Random rng = new Random();
         double nextGaussian;
-        if (number > 1000) {
-            nextGaussian = rng.nextGaussian() * 100 + number;
-        } else {
-            nextGaussian = rng.nextGaussian() * 10 + number;
-        }
+        nextGaussian = rng.nextGaussian() * 10 + number;
         return Math.round(nextGaussian);
     }
 

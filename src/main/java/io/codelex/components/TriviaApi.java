@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Random;
 
+import static io.codelex.Config.TRIVIA_TYPES;
+
 public class TriviaApi {
 
     private static final String URL = "http://numbersapi.com/random/";
@@ -32,7 +34,6 @@ public class TriviaApi {
 
     private static String getRandomTriviaType() {
         Random rng = new Random();
-        String[] triviaTypes = {"trivia", "year", "math"};
-        return triviaTypes[rng.nextInt(3)];
+        return TRIVIA_TYPES[rng.nextInt(TRIVIA_TYPES.length - 1)];
     }
 }
