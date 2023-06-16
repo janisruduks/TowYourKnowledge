@@ -16,13 +16,12 @@ public class TriviaQuestion {
     private List<Long> possibleAnswers;
     private long userAnswer;
 
+    public TriviaQuestion() {}
+
     public TriviaQuestion(String triviaQuestion, int number, boolean found) {
         this.triviaQuestion = triviaQuestion;
         this.number = number;
         this.found = found;
-    }
-
-    public TriviaQuestion() {
     }
 
     public String getTriviaQuestion() {
@@ -36,26 +35,28 @@ public class TriviaQuestion {
         this.answeredCorrectly = answeredCorrectly;
     }
 
-    private List<Long> generateAnswers() {
+    private List<Long> getUniquePossibleAnswers() {
         Set<Long> setOfNumbers = new HashSet<>();
         setOfNumbers.add(number);
         while (setOfNumbers.size() < POSSIBLE_ANSWERS) {
             setOfNumbers.add(generateNumberCloseToAnswer());
         }
+        return setListAndShuffle(setOfNumbers);
+    }
+
+    private long generateNumberCloseToAnswer() {
+        Random rng = new Random();
+        return Math.round(rng.nextGaussian() * 10 + number);
+    }
+
+    private List<Long> setListAndShuffle(Set<Long> setOfNumbers) {
         List<Long> listOfAnswers = new ArrayList<>(setOfNumbers);
         Collections.shuffle(listOfAnswers);
         return listOfAnswers;
     }
 
-    private long generateNumberCloseToAnswer() {
-        Random rng = new Random();
-        double nextGaussian;
-        nextGaussian = rng.nextGaussian() * 10 + number;
-        return Math.round(nextGaussian);
-    }
-
     public void setPossibleAnswers() {
-        this.possibleAnswers = generateAnswers();
+        this.possibleAnswers = getUniquePossibleAnswers();
     }
 
     public long getNumber() {

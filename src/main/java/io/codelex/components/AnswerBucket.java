@@ -15,15 +15,7 @@ public class AnswerBucket {
         return answerBucket.size();
     }
 
-    public void displayLastAnswer() {
-        TriviaQuestion answer = getLastAnswer();
-        System.out.println("Last question was:");
-        System.out.println("Question: " + answer.getTriviaQuestion());
-        System.out.println("Correct answer: " + answer.getNumber());
-        System.out.println("Your answer: " + answer.getUserAnswer());
-    }
-
-    private TriviaQuestion getLastAnswer() {
+    TriviaQuestion getLastAnswer() {
         return answerBucket.get(answerBucket.size() - 1);
     }
 }

@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Random;
 
+import static io.codelex.Config.MAX_API_RETRIES;
 import static io.codelex.Config.TRIVIA_TYPES;
 
 public class TriviaApi {
@@ -18,22 +19,32 @@ public class TriviaApi {
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public static TriviaQuestion getTriviaQuestion() {
-        String finalUrl = URL + getRandomTriviaType() + URL_QUERY;
-        Optional<TriviaQuestion> optionalTriviaQuestion = getAPIResponse(finalUrl, TriviaQuestion.class);
-        return optionalTriviaQuestion.orElse(null);
+        return getTriviaQuestion(0);
     }
 
-    private static <T> Optional<T> getAPIResponse(String url, Class<T> response) {
-        try {
-            return Optional.ofNullable(MAPPER.readValue(new URL(url), response));
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+    private static TriviaQuestion getTriviaQuestion(int retryCount) {
+        if (retryCount >= MAX_API_RETRIES) {
+            System.out.println("API is currently under load, please try again later");
+            System.exit(1);
         }
-        return Optional.empty();
+        String finalUrl = URL + getRandomTriviaType() + URL_QUERY;
+        Optional<TriviaQuestion> optionalTriviaQuestion = getAPIResponse(finalUrl);
+        return optionalTriviaQuestion
+                .filter(TriviaQuestion::isFound)
+                .orElseGet(() -> getTriviaQuestion(retryCount + 1));
     }
 
     private static String getRandomTriviaType() {
         Random rng = new Random();
-        return TRIVIA_TYPES[rng.nextInt(TRIVIA_TYPES.length - 1)];
+        return TRIVIA_TYPES[rng.nextInt(TRIVIA_TYPES.length)];
+    }
+
+    private static Optional<TriviaQuestion> getAPIResponse(String url) {
+        try {
+            return Optional.ofNullable(MAPPER.readValue(new URL(url), TriviaQuestion.class));
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 }

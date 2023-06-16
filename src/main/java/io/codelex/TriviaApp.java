@@ -1,9 +1,6 @@
 package io.codelex;
 
-import io.codelex.components.AnswerBucket;
-import io.codelex.components.TextAndASCIIArt;
-import io.codelex.components.TriviaApi;
-import io.codelex.components.TriviaQuestion;
+import io.codelex.components.*;
 
 import java.util.InputMismatchException;
 import java.util.Optional;
@@ -25,13 +22,12 @@ public class TriviaApp {
         TextAndASCIIArt.welcomeUser(QUESTION_AMOUNT);
         System.out.println("To start type 'start'");
         keyboard.next();
-
         long timeAtBeginning = System.currentTimeMillis();
 
         while (!answeredWrong && answeredQuestions != QUESTION_AMOUNT) {
-            answerTheQuestion(keyboard, validateTriviaQuestion(TriviaApi.getTriviaQuestion()), answerBucket);
+            answerTheQuestion(keyboard, TriviaApi.getTriviaQuestion(), answerBucket);
         }
-        endGame(answerBucket, keyboard, timeAtBeginning);
+        endGame(answerBucket, timeAtBeginning);
     }
 
     private static void answerTheQuestion(Scanner keyboard, TriviaQuestion question, AnswerBucket bucket) {
@@ -88,29 +84,13 @@ public class TriviaApp {
         answeredQuestions++;
     }
 
-    private static TriviaQuestion validateTriviaQuestion(TriviaQuestion question) {
-        if (question != null && question.isFound()) {
-            return question;
-        } else {
-            TriviaQuestion newQuestion = TriviaApi.getTriviaQuestion();
-            return validateTriviaQuestion(newQuestion);
-        }
-    }
-
-    private static void endGame(AnswerBucket bucket, Scanner keyboard, long timeAtBeginning) {
+    private static void endGame(AnswerBucket bucket, long timeAtBeginning) {
         if (answeredQuestions == QUESTION_AMOUNT) {
-            System.out.println("You got your car back!");
-            displayCarWonASCII();
-            displayQuestionPromptAndDisplayStatistics(
-                    keyboard, QUESTION_AMOUNT, bucket, timeAtBeginning, System.currentTimeMillis()
-            );
+            displayVictoryMessage();
         } else {
-            System.out.println("You didn't guess correctly...");
-            displayCarLostASCII();
-            displayQuestionPromptAndDisplayStatistics(
-                    keyboard, QUESTION_AMOUNT, bucket, timeAtBeginning, System.currentTimeMillis()
-            );
-            bucket.displayLastAnswer();
+            displayDefeatMessage();
+            displayLastAnswer(bucket);
         }
+        displayStatistics(bucket, QUESTION_AMOUNT, timeAtBeginning, System.currentTimeMillis());
     }
 }

@@ -1,20 +1,11 @@
 package io.codelex.components;
 
-import java.util.Scanner;
-
 public class TextAndASCIIArt {
 
-    public static void displayQuestionPromptAndDisplayStatistics(
-            Scanner keyboard, int QUESTION_AMOUNT, AnswerBucket bucket, long start, long end) {
-        System.out.println("To see last question and statistics type 'see'");
-        keyboard.next();
-        displayStatistics(bucket, QUESTION_AMOUNT, start, end);
-    }
-
-    private static void displayStatistics(AnswerBucket bucket, int QUESTION_AMOUNT, long start, long end) {
-        System.out.println("STATISTICS:");
-        System.out.println("Out of " + QUESTION_AMOUNT + " questions, you answered " + bucket.getAnswersAmount());
-        System.out.println("It took you " + calculateTimeElapsed(start, end) + " seconds");
+    public static void displayStatistics(AnswerBucket bucket, int QUESTION_AMOUNT, long start, long end) {
+        System.out.println("-STATISTICS:");
+        System.out.println("--Out of " + QUESTION_AMOUNT + " questions, you answered " + bucket.getAnswersAmount());
+        System.out.println("--It took you " + calculateTimeElapsed(start, end) + " seconds");
     }
 
     private static float calculateTimeElapsed(long start, long end) {
@@ -29,7 +20,17 @@ public class TextAndASCIIArt {
         System.out.println("If you do, you get back your car!");
     }
 
-    public static void displayCarWonASCII() {
+    public static void displayVictoryMessage() {
+        System.out.println("You got your car back!");
+        displayCarWonASCII();
+    }
+
+    public static void displayDefeatMessage() {
+        System.out.println("You didn't guess correctly...");
+        displayCarLostASCII();
+    }
+
+    private static void displayCarWonASCII() {
         System.out.println("""
                   ______
                  /|_||_\\`.__
@@ -38,7 +39,7 @@ public class TextAndASCIIArt {
                 """);
     }
 
-    public static void displayCarLostASCII() {
+    private static void displayCarLostASCII() {
         System.out.println("""
                                     /\\\\      _____  bye bye \s
                      ,-----,       /  \\\\____/__|__\\\s
@@ -46,5 +47,13 @@ public class TextAndASCIIArt {
                  ==(o)-----(o)==J    `(o)-------(o)=   \s
                 ``````````````````````````````````````` dp
                 """);
+    }
+
+    public static void displayLastAnswer(AnswerBucket bucket) {
+        TriviaQuestion answer = bucket.getLastAnswer();
+        System.out.println("-Last trivia was:");
+        System.out.println("--Question: " + answer.getTriviaQuestion());
+        System.out.println("--Correct answer: " + answer.getNumber());
+        System.out.println("--Your answer: " + answer.getUserAnswer());
     }
 }
