@@ -20,8 +20,8 @@ public class TriviaApp {
         AnswerBucket answerBucket = new AnswerBucket();
 
         welcomeUser(QUESTION_AMOUNT);
-        System.out.println("To start type 'start'");
-        keyboard.next();
+        promptToStartGame(keyboard);
+
         long timeAtBeginning = System.currentTimeMillis();
 
         while (!answeredWrong && answeredQuestions != QUESTION_AMOUNT) {
@@ -38,28 +38,13 @@ public class TriviaApp {
     }
 
     private static void showQuestion(TriviaQuestion question) {
-        displayCheat(question);
+        displayCheat(question.getNumber(), cheatMode);
         System.out.println("-Question " + (answeredQuestions + 1) + ". " + question.getTriviaQuestion());
-    }
-
-    private static void displayCheat(TriviaQuestion question) {
-        if (cheatMode) {
-            System.out.println(question.getNumber());
-        }
     }
 
     private static void prepareAndDisplayAnswers(TriviaQuestion question) {
         question.setPossibleAnswers(); // we need to set manually because answer now = 0
         question.displayPossibleAnswers();
-    }
-
-    private static Optional<Long> getUserAnswerInputOrOptional(Scanner keyboard) {
-        try {
-            return Optional.of(keyboard.nextLong());
-        } catch (InputMismatchException e) {
-            keyboard.nextLine();
-            return Optional.empty();
-        }
     }
 
     private static void updateQuestion(Scanner keyboard, TriviaQuestion question) {
@@ -71,6 +56,15 @@ public class TriviaApp {
                     updateQuestion(keyboard, question);
                 }
         );
+    }
+
+    private static Optional<Long> getUserAnswerInputOrOptional(Scanner keyboard) {
+        try {
+            return Optional.of(keyboard.nextLong());
+        } catch (InputMismatchException e) {
+            keyboard.nextLine();
+            return Optional.empty();
+        }
     }
 
     private static void updateBucketAndStatus(TriviaQuestion question, AnswerBucket bucket) {

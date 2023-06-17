@@ -1,5 +1,7 @@
 package io.codelex.components;
 
+import java.util.Scanner;
+
 public class TextAndASCIIArt {
 
     public static void displayStatistics(int answerAmount, int QUESTION_AMOUNT, long start, long end) {
@@ -19,14 +21,14 @@ public class TextAndASCIIArt {
         System.out.println("If you do, you get back your car!");
     }
 
+    public static void promptToStartGame(Scanner keyboard) {
+        System.out.println("To start type 'start'");
+        keyboard.next();
+    }
+
     public static void displayVictoryMessage() {
         System.out.println("You got your car back!");
         displayCarWonASCII();
-    }
-
-    public static void displayDefeatMessage() {
-        System.out.println("You didn't guess correctly...");
-        displayCarLostASCII();
     }
 
     private static void displayCarWonASCII() {
@@ -38,6 +40,11 @@ public class TextAndASCIIArt {
                 """);
     }
 
+    public static void displayDefeatMessage() {
+        System.out.println("You didn't guess correctly...");
+        displayCarLostASCII();
+    }
+
     private static void displayCarLostASCII() {
         System.out.println("""
                                     /\\\\      _____  bye bye \s
@@ -46,6 +53,12 @@ public class TextAndASCIIArt {
                  ==(o)-----(o)==J    `(o)-------(o)=   \s
                 ``````````````````````````````````````` dp
                 """);
+    }
+
+    public static void displayCheat(long triviaAnswer, boolean cheatMode) {
+        if (cheatMode) {
+            System.out.println(triviaAnswer);
+        }
     }
 
     public static void displayLastAnswer(TriviaQuestion answer) {

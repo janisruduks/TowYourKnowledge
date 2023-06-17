@@ -35,6 +35,10 @@ public class TriviaQuestion {
         this.answeredCorrectly = answeredCorrectly;
     }
 
+    public void setPossibleAnswers() {
+        this.possibleAnswers = getUniquePossibleAnswers();
+    }
+
     private List<Long> getUniquePossibleAnswers() {
         Set<Long> setOfNumbers = new HashSet<>();
         setOfNumbers.add(number);
@@ -55,19 +59,8 @@ public class TriviaQuestion {
         return listOfAnswers;
     }
 
-    public void setPossibleAnswers() {
-        this.possibleAnswers = getUniquePossibleAnswers();
-    }
-
     public long getNumber() {
         return number;
-    }
-
-    public void displayPossibleAnswers() {
-        System.out.println("--Possible answers:");
-        for (int i = 0; i < possibleAnswers.size(); i++) {
-            System.out.println("---" + (i + 1) + ": " + possibleAnswers.get(i));
-        }
     }
 
     public long getUserAnswer() {
@@ -80,5 +73,12 @@ public class TriviaQuestion {
 
     public boolean isFound() {
         return found;
+    }
+
+    public void displayPossibleAnswers() {
+        System.out.println("--Possible answers:");
+        for (int i = 0; i < possibleAnswers.size(); i++) {
+            System.out.println("---" + (i + 1) + ": " + possibleAnswers.get(i));
+        }
     }
 }

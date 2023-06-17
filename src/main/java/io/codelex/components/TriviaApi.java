@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.Random;
 
@@ -23,28 +24,35 @@ public class TriviaApi {
     }
 
     private static TriviaQuestion getTriviaQuestion(int retryCount) {
-        if (retryCount >= MAX_API_RETRIES) {
-            System.out.println("API is currently under load, please try again later");
-            System.exit(1);
-        }
-        String finalUrl = URL + getRandomTriviaType() + URL_QUERY;
-        Optional<TriviaQuestion> optionalTriviaQuestion = getAPIResponse(finalUrl);
+        checkRetryLimitAndExitIfReached(retryCount);
+        Optional<TriviaQuestion> optionalTriviaQuestion = getAPIResponse();
         return optionalTriviaQuestion
                 .filter(TriviaQuestion::isFound)
                 .orElseGet(() -> getTriviaQuestion(retryCount + 1));
     }
 
-    private static String getRandomTriviaType() {
-        Random rng = new Random();
-        return TRIVIA_TYPES[rng.nextInt(TRIVIA_TYPES.length)];
+    private static void checkRetryLimitAndExitIfReached(int retryCount) {
+        if (retryCount >= MAX_API_RETRIES) {
+            System.out.println("API is currently under load, please try again later");
+            System.exit(1);
+        }
     }
 
-    private static Optional<TriviaQuestion> getAPIResponse(String url) {
+    private static Optional<TriviaQuestion> getAPIResponse() {
         try {
-            return Optional.ofNullable(MAPPER.readValue(new URL(url), TriviaQuestion.class));
-        } catch (IOException e) {
+            return Optional.ofNullable(MAPPER.readValue(new URI(getFinalizeURL()).toURL(), TriviaQuestion.class));
+        } catch (IOException | URISyntaxException e) {
             System.out.println("Error: " + e.getMessage());
             return Optional.empty();
         }
+    }
+
+    private static String getFinalizeURL() {
+        return URL + getRandomTriviaType() + URL_QUERY;
+    }
+
+    private static String getRandomTriviaType() {
+        Random rng = new Random();
+        return TRIVIA_TYPES[rng.nextInt(TRIVIA_TYPES.length)];
     }
 }
