@@ -12,7 +12,7 @@ import java.util.Random;
 class TriviaApi {
 
     private static final String URL = "http://numbersapi.com/random/";
-    private static final String URL_QUERY = "?json&?min=0&max=10000000";
+    private static final String URL_QUERY = "?json&?min=0&max=1000000000";
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private final String[] triviaTypes;

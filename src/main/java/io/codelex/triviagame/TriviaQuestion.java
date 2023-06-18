@@ -18,7 +18,7 @@ class TriviaQuestion {
     public TriviaQuestion() {
     }
 
-    public TriviaQuestion(String triviaQuestion, int number, boolean found) {
+    public TriviaQuestion(String triviaQuestion, long number, boolean found) {
         this.triviaQuestion = triviaQuestion;
         this.number = number;
         this.found = found;
@@ -44,7 +44,7 @@ class TriviaQuestion {
     }
 
     private List<Long> getUniquePossibleAnswers() {
-        Set<Long> setOfNumbers = new HashSet<>();
+        HashSet<Long> setOfNumbers = new HashSet<>();
         setOfNumbers.add(number);
         while (setOfNumbers.size() < possibleAnswerCount) {
             setOfNumbers.add(generateNumberCloseToAnswer());

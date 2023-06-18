@@ -18,7 +18,8 @@ public class TriviaGame {
     private int answeredQuestions = 0;
     private boolean answeredWrong = false;
 
-    public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount, boolean cheatMode, int maxApiRetries) {
+    public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount,
+                      boolean cheatMode, int maxApiRetries) {
         this.possibleAnswerCount = possibleAnswersCount;
         this.questionAmount = questionAmount;
         this.cheatMode = cheatMode;
@@ -30,7 +31,6 @@ public class TriviaGame {
     public void start() {
         welcomeUser(questionAmount);
         promptToStartGame(keyboard);
-
         long timeAtBeginning = System.currentTimeMillis();
 
         TriviaQuestion triviaQuestion = null;
@@ -50,36 +50,36 @@ public class TriviaGame {
         return triviaQuestion;
     }
 
-    private void answerTheQuestion(TriviaQuestion question) {
-        showQuestion(question);
-        prepareAndDisplayAnswers(question);
-        updateQuestion(keyboard, question);
-        updateBucketAndStatus(question);
+    private void answerTheQuestion(TriviaQuestion triviaQuestion) {
+        displayQuestion(triviaQuestion);
+        prepareAndDisplayAnswers(triviaQuestion);
+        updateQuestion(triviaQuestion);
+        updateBucketAndStatus(triviaQuestion);
     }
 
-    private void showQuestion(TriviaQuestion question) {
-        displayCheat(question.getNumber(), cheatMode);
-        System.out.println("-Question " + (answeredQuestions + 1) + ". " + question.getTriviaQuestion());
+    private void displayQuestion(TriviaQuestion triviaQuestion) {
+        displayCheat(triviaQuestion.getNumber(), cheatMode);
+        System.out.println("-Question " + (answeredQuestions + 1) + ". " + triviaQuestion.getTriviaQuestion());
     }
 
-    private void prepareAndDisplayAnswers(TriviaQuestion question) {
-        question.setPossibleAnswerCount(possibleAnswerCount);
-        question.setPossibleAnswers(); // we need to set manually because answer now = 0
-        question.displayPossibleAnswers();
+    private void prepareAndDisplayAnswers(TriviaQuestion triviaQuestion) {
+        triviaQuestion.setPossibleAnswerCount(possibleAnswerCount);
+        triviaQuestion.setPossibleAnswers(); // we need to set manually because answer now = 0
+        triviaQuestion.displayPossibleAnswers();
     }
 
-    private void updateQuestion(Scanner keyboard, TriviaQuestion question) {
-        Optional<Long> optionalLong = getUserAnswerInputOrOptional(keyboard);
+    private void updateQuestion(TriviaQuestion triviaQuestion) {
+        Optional<Long> optionalLong = getUserAnswerInputOrOptional();
         optionalLong.ifPresentOrElse(
-                question::setUserAnswer,
+                triviaQuestion::setUserAnswer,
                 () -> {
                     System.out.println("Error: Invalid input, please try again");
-                    updateQuestion(keyboard, question);
+                    updateQuestion(triviaQuestion);
                 }
         );
     }
 
-    private Optional<Long> getUserAnswerInputOrOptional(Scanner keyboard) {
+    private Optional<Long> getUserAnswerInputOrOptional() {
         try {
             return Optional.of(keyboard.nextLong());
         } catch (InputMismatchException e) {
