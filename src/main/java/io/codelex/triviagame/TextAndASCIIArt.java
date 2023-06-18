@@ -1,12 +1,12 @@
-package io.codelex.components;
+package io.codelex.triviagame;
 
 import java.util.Scanner;
 
-public class TextAndASCIIArt {
+class TextAndASCIIArt {
 
-    public static void displayStatistics(int answerAmount, int QUESTION_AMOUNT, long start, long end) {
+    public static void displayStatistics(int answerAmount, int questionAmount, long start, long end) {
         System.out.println("-STATISTICS:");
-        System.out.println("--Out of " + QUESTION_AMOUNT + " questions, you answered " + answerAmount);
+        System.out.println("--Out of " + questionAmount + " questions, you answered " + (answerAmount - 1) + " correctly");
         System.out.println("--It took you " + calculateTimeElapsed(start, end) + " seconds");
     }
     private static float calculateTimeElapsed(long start, long end) {
@@ -14,10 +14,10 @@ public class TextAndASCIIArt {
         return msec / 1000f;
     }
 
-    public static void welcomeUser(int QUESTION_AMOUNT) {
+    public static void welcomeUser(int questionAmount) {
         System.out.println("Welcome to TRIVIA-TOW-MAN!");
         System.out.println("We are towing your car away, but you can get it back!");
-        System.out.println("I will ask you " + QUESTION_AMOUNT + " questions, and you need to answer them!");
+        System.out.println("I will ask you " + questionAmount + " questions, and you need to answer them!");
         System.out.println("If you do, you get back your car!");
     }
 

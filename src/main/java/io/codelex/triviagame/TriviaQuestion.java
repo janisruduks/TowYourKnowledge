@@ -1,12 +1,10 @@
-package io.codelex.components;
+package io.codelex.triviagame;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
 
-import static io.codelex.Config.POSSIBLE_ANSWERS;
-
-public class TriviaQuestion {
+class TriviaQuestion {
 
     @JsonProperty("text")
     private String triviaQuestion;
@@ -14,9 +12,11 @@ public class TriviaQuestion {
     private boolean found;
     private boolean answeredCorrectly;
     private List<Long> possibleAnswers;
+    private int possibleAnswerCount;
     private long userAnswer;
 
-    public TriviaQuestion() {}
+    public TriviaQuestion() {
+    }
 
     public TriviaQuestion(String triviaQuestion, int number, boolean found) {
         this.triviaQuestion = triviaQuestion;
@@ -35,6 +35,10 @@ public class TriviaQuestion {
         this.answeredCorrectly = answeredCorrectly;
     }
 
+    public void setPossibleAnswerCount(int possibleAnswerCount) {
+        this.possibleAnswerCount = possibleAnswerCount;
+    }
+
     public void setPossibleAnswers() {
         this.possibleAnswers = getUniquePossibleAnswers();
     }
@@ -42,7 +46,7 @@ public class TriviaQuestion {
     private List<Long> getUniquePossibleAnswers() {
         Set<Long> setOfNumbers = new HashSet<>();
         setOfNumbers.add(number);
-        while (setOfNumbers.size() < POSSIBLE_ANSWERS) {
+        while (setOfNumbers.size() < possibleAnswerCount) {
             setOfNumbers.add(generateNumberCloseToAnswer());
         }
         return setListAndShuffle(setOfNumbers);

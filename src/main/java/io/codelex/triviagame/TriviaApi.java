@@ -1,4 +1,4 @@
-package io.codelex.components;
+package io.codelex.triviagame;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,21 +9,25 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.Random;
 
-import static io.codelex.Config.MAX_API_RETRIES;
-import static io.codelex.Config.TRIVIA_TYPES;
-
-public class TriviaApi {
+class TriviaApi {
 
     private static final String URL = "http://numbersapi.com/random/";
     private static final String URL_QUERY = "?json&?min=0&max=10000000";
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private final String[] triviaTypes;
+    private final int maxApiRetries;
 
-    public static TriviaQuestion getTriviaQuestion() {
+    public TriviaApi(String[] triviaTypes, int maxApiRetries) {
+        this.triviaTypes = triviaTypes;
+        this.maxApiRetries = maxApiRetries;
+    }
+
+    public TriviaQuestion getTriviaQuestion() {
         return getTriviaQuestion(0);
     }
 
-    private static TriviaQuestion getTriviaQuestion(int retryCount) {
+    private TriviaQuestion getTriviaQuestion(int retryCount) {
         checkRetryLimitAndExitIfReached(retryCount);
         Optional<TriviaQuestion> optionalTriviaQuestion = getAPIResponse();
         return optionalTriviaQuestion
@@ -31,14 +35,14 @@ public class TriviaApi {
                 .orElseGet(() -> getTriviaQuestion(retryCount + 1));
     }
 
-    private static void checkRetryLimitAndExitIfReached(int retryCount) {
-        if (retryCount >= MAX_API_RETRIES) {
+    private void checkRetryLimitAndExitIfReached(int retryCount) {
+        if (retryCount >= maxApiRetries) {
             System.out.println("API is currently under load, please try again later");
             System.exit(1);
         }
     }
 
-    private static Optional<TriviaQuestion> getAPIResponse() {
+    private Optional<TriviaQuestion> getAPIResponse() {
         try {
             return Optional.ofNullable(MAPPER.readValue(new URI(getFinalizeURL()).toURL(), TriviaQuestion.class));
         } catch (IOException | URISyntaxException e) {
@@ -47,12 +51,12 @@ public class TriviaApi {
         }
     }
 
-    private static String getFinalizeURL() {
+    private String getFinalizeURL() {
         return URL + getRandomTriviaType() + URL_QUERY;
     }
 
-    private static String getRandomTriviaType() {
+    private String getRandomTriviaType() {
         Random rng = new Random();
-        return TRIVIA_TYPES[rng.nextInt(TRIVIA_TYPES.length)];
+        return triviaTypes[rng.nextInt(triviaTypes.length)];
     }
 }
