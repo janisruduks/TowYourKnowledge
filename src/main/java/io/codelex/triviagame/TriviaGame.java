@@ -10,19 +10,17 @@ import static io.codelex.triviagame.TextAndASCIIArt.*;
 public class TriviaGame {
 
     private final Scanner keyboard;
-    public int possibleAnswerCount;
-    public String[] triviaTypes;
-    protected int questionAmount;
-    protected boolean cheatMode;
-    private int answeredQuestions = 0;
-    private boolean answeredWrong = false;
     private final LinkedHashSet<TriviaQuestion> allTriviaQuestions;
     private final TriviaApi triviaApi;
+    private final int possibleAnswerCount;
+    private final int questionAmount;
+    private final boolean cheatMode;
+    private int answeredQuestions = 0;
+    private boolean answeredWrong = false;
 
     public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount, boolean cheatMode, int maxApiRetries) {
         this.possibleAnswerCount = possibleAnswersCount;
         this.questionAmount = questionAmount;
-        this.triviaTypes = triviaTypes;
         this.cheatMode = cheatMode;
         this.allTriviaQuestions = new LinkedHashSet<>();
         this.triviaApi = new TriviaApi(triviaTypes, maxApiRetries);
