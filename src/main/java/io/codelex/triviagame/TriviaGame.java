@@ -17,11 +17,11 @@ public class TriviaGame {
     private int answeredQuestions = 0;
     private boolean answeredWrong = false;
 
-    public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount, int maxApiRetries) {
+    public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount) {
         this.possibleAnswerCount = possibleAnswersCount;
         this.questionAmount = questionAmount;
         this.allTriviaQuestions = new LinkedHashSet<>();
-        this.triviaApi = new TriviaApi(triviaTypes, maxApiRetries);
+        this.triviaApi = new TriviaApi(triviaTypes);
         this.keyboard = new Scanner(System.in);
     }
 
@@ -29,7 +29,6 @@ public class TriviaGame {
         welcomeUser(questionAmount);
         promptToStartGame(keyboard);
         long timeAtBeginning = System.currentTimeMillis();
-
         TriviaQuestion triviaQuestion = null;
         while (!answeredWrong && answeredQuestions != questionAmount) {
             triviaQuestion = checkIfNoDuplication();
@@ -61,7 +60,7 @@ public class TriviaGame {
     private void prepareAndDisplayAnswers(TriviaQuestion triviaQuestion) {
         triviaQuestion.setPossibleAnswerCount(possibleAnswerCount);
         triviaQuestion.setPossibleAnswers(); // we need to set manually because answer now = 0
-        triviaQuestion.displayPossibleAnswers();
+        displayPossibleAnswers(triviaQuestion.getPossibleAnswers());
     }
 
     private void updateQuestion(TriviaQuestion triviaQuestion) {

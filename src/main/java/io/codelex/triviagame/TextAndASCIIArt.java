@@ -1,22 +1,9 @@
 package io.codelex.triviagame;
 
+import java.util.List;
 import java.util.Scanner;
 
 class TextAndASCIIArt {
-
-    public static void displayStatistics(int answerAmount, int questionAmount, long start, long end) {
-        if (answerAmount < questionAmount) {
-            answerAmount--;
-        }
-        System.out.println("-STATISTICS:");
-        System.out.println("--Out of " + questionAmount + " questions, you answered " + answerAmount + " correctly");
-        System.out.println("--It took you " + calculateTimeElapsed(start, end) + " seconds");
-    }
-
-    private static float calculateTimeElapsed(long start, long end) {
-        float msec = end - start;
-        return msec / 1000f;
-    }
 
     public static void welcomeUser(int questionAmount) {
         System.out.println("Welcome to TRIVIA-TOW-MAN!");
@@ -28,6 +15,13 @@ class TextAndASCIIArt {
     public static void promptToStartGame(Scanner keyboard) {
         System.out.println("To start type 'start'");
         keyboard.next();
+    }
+
+    public static void displayPossibleAnswers(List<Long> possibleAnswers) {
+        System.out.println("--Possible answers:");
+        for (int i = 0; i < possibleAnswers.size(); i++) {
+            System.out.println("---" + (i + 1) + ": " + possibleAnswers.get(i));
+        }
     }
 
     public static void displayVictoryMessage() {
@@ -64,5 +58,19 @@ class TextAndASCIIArt {
         System.out.println("--Question: " + answer.getTriviaQuestion());
         System.out.println("--Correct answer: " + answer.getNumber());
         System.out.println("--Your answer: " + answer.getUserAnswer());
+    }
+
+    public static void displayStatistics(int answerAmount, int questionAmount, long start, long end) {
+        if (answerAmount < questionAmount) {
+            answerAmount--;
+        }
+        System.out.println("-STATISTICS:");
+        System.out.println("--Out of " + questionAmount + " questions, you answered " + answerAmount + " correctly");
+        System.out.println("--It took you " + calculateTimeElapsed(start, end) + " seconds");
+    }
+
+    private static float calculateTimeElapsed(long start, long end) {
+        float msec = end - start;
+        return msec / 1000f;
     }
 }

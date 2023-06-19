@@ -39,6 +39,9 @@ class TriviaQuestion {
         this.possibleAnswerCount = possibleAnswerCount;
     }
 
+    public List<Long> getPossibleAnswers() {
+        return this.possibleAnswers;
+    }
     public void setPossibleAnswers() {
         this.possibleAnswers = getUniquePossibleAnswers();
     }
@@ -77,12 +80,5 @@ class TriviaQuestion {
 
     public boolean isFound() {
         return found;
-    }
-
-    public void displayPossibleAnswers() {
-        System.out.println("--Possible answers:");
-        for (int i = 0; i < possibleAnswers.size(); i++) {
-            System.out.println("---" + (i + 1) + ": " + possibleAnswers.get(i));
-        }
     }
 }

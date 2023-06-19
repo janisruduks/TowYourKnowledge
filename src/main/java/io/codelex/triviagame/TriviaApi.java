@@ -13,14 +13,13 @@ class TriviaApi {
 
     private static final String URL = "http://numbersapi.com/random/";
     private static final String URL_QUERY = "?json&?min=0&max=1000000000";
+    private static final int MAX_API_TRIES = 3;
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private final String[] triviaTypes;
-    private final int maxApiRetries;
 
-    public TriviaApi(String[] triviaTypes, int maxApiRetries) {
+    public TriviaApi(String[] triviaTypes) {
         this.triviaTypes = triviaTypes;
-        this.maxApiRetries = maxApiRetries;
     }
 
     public TriviaQuestion getTriviaQuestion() {
@@ -36,7 +35,7 @@ class TriviaApi {
     }
 
     private void checkRetryLimitAndExitIfReached(int retryCount) {
-        if (retryCount >= maxApiRetries) {
+        if (retryCount >= MAX_API_TRIES) {
             System.out.println("API is currently under load, please try again later");
             System.exit(1);
         }
