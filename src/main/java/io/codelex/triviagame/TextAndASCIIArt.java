@@ -59,12 +59,6 @@ class TextAndASCIIArt {
                 """);
     }
 
-    public static void displayCheat(long triviaAnswer, boolean cheatMode) {
-        if (cheatMode) {
-            System.out.println(triviaAnswer);
-        }
-    }
-
     public static void displayLastAnswer(TriviaQuestion answer) {
         System.out.println("-Last trivia was:");
         System.out.println("--Question: " + answer.getTriviaQuestion());

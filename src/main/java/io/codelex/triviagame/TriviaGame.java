@@ -14,15 +14,12 @@ public class TriviaGame {
     private final TriviaApi triviaApi;
     private final int possibleAnswerCount;
     private final int questionAmount;
-    private final boolean cheatMode;
     private int answeredQuestions = 0;
     private boolean answeredWrong = false;
 
-    public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount,
-                      boolean cheatMode, int maxApiRetries) {
+    public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount, int maxApiRetries) {
         this.possibleAnswerCount = possibleAnswersCount;
         this.questionAmount = questionAmount;
-        this.cheatMode = cheatMode;
         this.allTriviaQuestions = new LinkedHashSet<>();
         this.triviaApi = new TriviaApi(triviaTypes, maxApiRetries);
         this.keyboard = new Scanner(System.in);
@@ -58,7 +55,6 @@ public class TriviaGame {
     }
 
     private void displayQuestion(TriviaQuestion triviaQuestion) {
-        displayCheat(triviaQuestion.getNumber(), cheatMode);
         System.out.println("-Question " + (answeredQuestions + 1) + ". " + triviaQuestion.getTriviaQuestion());
     }
 
