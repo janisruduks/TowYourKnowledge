@@ -1,24 +1,24 @@
 package io.codelex.triviagame;
 
-import java.util.*;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 
-import static io.codelex.triviagame.TextAndASCIIArt.*;
+import static io.codelex.triviagame.GameUI.*;
 
 public class TriviaGame {
 
-    private final Scanner keyboard;
-    private final LinkedHashSet<TriviaQuestion> allTriviaQuestions;
+    private final Scanner keyboard = new Scanner(System.in);
     private final TriviaApi triviaApi;
     private final TriviaGameData triviaGameData;
     private final TriviaQuestionService triviaQuestionService = new TriviaQuestionService();
-    private TriviaQuestion triviaQuestion = null;
-    private Timer timer;
     private final TimerService timerService = new TimerService();
+    private Timer timer;
+    private TriviaQuestion triviaQuestion = null;
 
     public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount) {
-        this.allTriviaQuestions = new LinkedHashSet<>();
         this.triviaApi = new TriviaApi(triviaTypes);
-        this.keyboard = new Scanner(System.in);
         this.triviaGameData = new TriviaGameData(questionAmount, possibleAnswersCount);
     }
 
@@ -36,16 +36,16 @@ public class TriviaGame {
     }
 
     private String setFormattedTriviaText() {
-       String formattedText = triviaQuestion.getTriviaQuestion();
-       long triviaQuestionNumber = triviaQuestion.getNumber();
-       return triviaQuestionService.getFormattedTriviaText(triviaQuestionNumber, formattedText);
+        String triviaText = triviaQuestion.getTriviaQuestion();
+        long triviaQuestionNumber = triviaQuestion.getNumber();
+        return triviaQuestionService.getFormattedTriviaText(triviaQuestionNumber, triviaText);
     }
 
     private TriviaQuestion getUniqueTriviaQuestion() {
         TriviaQuestion triviaQuestion;
         do {
             triviaQuestion = triviaApi.getTriviaQuestion();
-        } while (!allTriviaQuestions.add(triviaQuestion));
+        } while (!triviaGameData.addQuestionIfUnique(triviaQuestion));
         return triviaQuestion;
     }
 

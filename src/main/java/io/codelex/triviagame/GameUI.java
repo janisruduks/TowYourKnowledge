@@ -3,12 +3,12 @@ package io.codelex.triviagame;
 import java.util.List;
 import java.util.Scanner;
 
-class TextAndASCIIArt {
+class GameUI {
 
     public static void welcomeUser(int questionAmount) {
         System.out.println("Welcome to TRIVIA-TOW-MAN!");
         System.out.println("We are towing your car away, but you can get it back!");
-        System.out.println("I will ask you " + questionAmount + " questions, and you need to answer them!");
+        System.out.printf("I will ask you %d questions, and you need to answer them\n", questionAmount);
         System.out.println("If you do, you get back your car!");
     }
 
