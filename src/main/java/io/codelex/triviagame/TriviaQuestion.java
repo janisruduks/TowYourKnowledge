@@ -2,7 +2,7 @@ package io.codelex.triviagame;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.*;
+import java.util.List;
 
 class TriviaQuestion {
 
@@ -10,7 +10,6 @@ class TriviaQuestion {
     private String triviaQuestion;
     private long number;
     private boolean found;
-    private boolean answeredCorrectly;
     private List<Long> possibleAnswers;
     private int possibleAnswerCount;
     private long userAnswer;
@@ -25,49 +24,43 @@ class TriviaQuestion {
     }
 
     public String getTriviaQuestion() {
-        if (number <= 0) {
-            return triviaQuestion.replaceFirst(String.valueOf(Math.abs(number)), "What");
-        }
-        return triviaQuestion.replaceFirst(String.valueOf(number), "What");
+        return triviaQuestion;
     }
 
-    public void setAnsweredCorrectly(boolean answeredCorrectly) {
-        this.answeredCorrectly = answeredCorrectly;
-    }
-
-    public void setPossibleAnswerCount(int possibleAnswerCount) {
-        this.possibleAnswerCount = possibleAnswerCount;
-    }
-
-    public List<Long> getPossibleAnswers() {
-        return this.possibleAnswers;
-    }
-    public void setPossibleAnswers() {
-        this.possibleAnswers = getUniquePossibleAnswers();
-    }
-
-    private List<Long> getUniquePossibleAnswers() {
-        HashSet<Long> setOfNumbers = new HashSet<>();
-        setOfNumbers.add(number);
-        while (setOfNumbers.size() < possibleAnswerCount) {
-            setOfNumbers.add(generateNumberCloseToAnswer());
-        }
-        return setListAndShuffle(setOfNumbers);
-    }
-
-    private long generateNumberCloseToAnswer() {
-        Random rng = new Random();
-        return Math.round(rng.nextGaussian() * 10 + number);
-    }
-
-    private List<Long> setListAndShuffle(Set<Long> setOfNumbers) {
-        List<Long> listOfAnswers = new ArrayList<>(setOfNumbers);
-        Collections.shuffle(listOfAnswers);
-        return listOfAnswers;
+    public void setTriviaQuestion(String triviaQuestion) {
+        this.triviaQuestion = triviaQuestion;
     }
 
     public long getNumber() {
         return number;
+    }
+
+    public void setNumber(long number) {
+        this.number = number;
+    }
+
+    public boolean isFound() {
+        return found;
+    }
+
+    public void setFound(boolean found) {
+        this.found = found;
+    }
+
+    public List<Long> getPossibleAnswers() {
+        return possibleAnswers;
+    }
+
+    public void setPossibleAnswers(List<Long> possibleAnswers) {
+        this.possibleAnswers = possibleAnswers;
+    }
+
+    public int getPossibleAnswerCount() {
+        return possibleAnswerCount;
+    }
+
+    public void setPossibleAnswerCount(int possibleAnswerCount) {
+        this.possibleAnswerCount = possibleAnswerCount;
     }
 
     public long getUserAnswer() {
@@ -76,9 +69,5 @@ class TriviaQuestion {
 
     public void setUserAnswer(long userAnswer) {
         this.userAnswer = userAnswer;
-    }
-
-    public boolean isFound() {
-        return found;
     }
 }

@@ -1,9 +1,6 @@
 package io.codelex.triviagame;
 
-import java.util.InputMismatchException;
-import java.util.LinkedHashSet;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 import static io.codelex.triviagame.TextAndASCIIArt.*;
 
@@ -12,33 +9,39 @@ public class TriviaGame {
     private final Scanner keyboard;
     private final LinkedHashSet<TriviaQuestion> allTriviaQuestions;
     private final TriviaApi triviaApi;
-    private final int possibleAnswerCount;
-    private final int questionAmount;
-    private int answeredQuestions = 0;
-    private boolean answeredWrong = false;
+    private final TriviaGameData triviaGameData;
+    private final TriviaQuestionService triviaQuestionService = new TriviaQuestionService();
+    private TriviaQuestion triviaQuestion = null;
+    private Timer timer;
+    private final TimerService timerService = new TimerService();
 
     public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount) {
-        this.possibleAnswerCount = possibleAnswersCount;
-        this.questionAmount = questionAmount;
         this.allTriviaQuestions = new LinkedHashSet<>();
         this.triviaApi = new TriviaApi(triviaTypes);
         this.keyboard = new Scanner(System.in);
+        this.triviaGameData = new TriviaGameData(questionAmount, possibleAnswersCount);
     }
 
     public void start() {
-        welcomeUser(questionAmount);
+        welcomeUser(triviaGameData.getQuestionAmount());
         promptToStartGame(keyboard);
-        long timeAtBeginning = System.currentTimeMillis();
-        TriviaQuestion triviaQuestion = null;
-        while (!answeredWrong && answeredQuestions != questionAmount) {
-            triviaQuestion = checkIfNoDuplication();
-            answerTheQuestion(triviaQuestion);
+        timer = new Timer(System.currentTimeMillis());
+        while (!triviaGameData.isAnsweredWrong()
+                && triviaGameData.getAnsweredQuestions() != triviaGameData.getQuestionAmount()) {
+            triviaQuestion = getUniqueTriviaQuestion();
+            triviaQuestion.setTriviaQuestion(setFormattedTriviaText());
+            answerTheQuestion();
         }
-        endGame(triviaQuestion, timeAtBeginning);
+        endGame();
     }
 
+    private String setFormattedTriviaText() {
+       String formattedText = triviaQuestion.getTriviaQuestion();
+       long triviaQuestionNumber = triviaQuestion.getNumber();
+       return triviaQuestionService.getFormattedTriviaText(triviaQuestionNumber, formattedText);
+    }
 
-    private TriviaQuestion checkIfNoDuplication() {
+    private TriviaQuestion getUniqueTriviaQuestion() {
         TriviaQuestion triviaQuestion;
         do {
             triviaQuestion = triviaApi.getTriviaQuestion();
@@ -46,30 +49,30 @@ public class TriviaGame {
         return triviaQuestion;
     }
 
-    private void answerTheQuestion(TriviaQuestion triviaQuestion) {
-        displayQuestion(triviaQuestion);
-        prepareAndDisplayAnswers(triviaQuestion);
-        updateQuestion(triviaQuestion);
-        updateBucketAndStatus(triviaQuestion);
+    private void answerTheQuestion() {
+        displayQuestion(triviaQuestion.getTriviaQuestion(), triviaGameData.getAnsweredQuestions());
+        prepareAndDisplayAnswers();
+        updateQuestion();
+        updateTriviaQuestionStatus();
     }
 
-    private void displayQuestion(TriviaQuestion triviaQuestion) {
-        System.out.println("-Question " + (answeredQuestions + 1) + ". " + triviaQuestion.getTriviaQuestion());
-    }
-
-    private void prepareAndDisplayAnswers(TriviaQuestion triviaQuestion) {
-        triviaQuestion.setPossibleAnswerCount(possibleAnswerCount);
-        triviaQuestion.setPossibleAnswers(); // we need to set manually because answer now = 0
+    private void prepareAndDisplayAnswers() {
+        triviaQuestion.setPossibleAnswerCount(triviaGameData.getPossibleAnswerCount());
+        List<Long> uniqueAnswers = triviaQuestionService.getUniquePossibleAnswers(
+                triviaQuestion.getNumber(),
+                triviaGameData.getPossibleAnswerCount()
+        );
+        triviaQuestion.setPossibleAnswers(uniqueAnswers);
         displayPossibleAnswers(triviaQuestion.getPossibleAnswers());
     }
 
-    private void updateQuestion(TriviaQuestion triviaQuestion) {
+    private void updateQuestion() {
         Optional<Long> optionalLong = getUserAnswerInputOrOptional();
         optionalLong.ifPresentOrElse(
                 triviaQuestion::setUserAnswer,
                 () -> {
                     System.out.println("Error: Invalid input, please try again");
-                    updateQuestion(triviaQuestion);
+                    updateQuestion();
                 }
         );
     }
@@ -83,23 +86,22 @@ public class TriviaGame {
         }
     }
 
-    private void updateBucketAndStatus(TriviaQuestion question) {
-        if (question.getUserAnswer() == question.getNumber()) {
-            question.setAnsweredCorrectly(true);
+    private void updateTriviaQuestionStatus() {
+        if (triviaQuestion.getUserAnswer() == triviaQuestion.getNumber()) {
+            triviaGameData.setAnsweredQuestions(triviaGameData.getAnsweredQuestions() + 1);
         } else {
-            question.setAnsweredCorrectly(false);
-            answeredWrong = true;
+            triviaGameData.setAnsweredWrong(true);
         }
-        answeredQuestions++;
     }
 
-    private void endGame(TriviaQuestion triviaQuestion, long timeAtBeginning) {
-        if (answeredQuestions == questionAmount) {
+    private void endGame() {
+        if (triviaGameData.getAnsweredQuestions() == triviaGameData.getQuestionAmount()) {
             displayVictoryMessage();
         } else {
             displayDefeatMessage();
             displayLastAnswer(triviaQuestion);
         }
-        displayStatistics(answeredQuestions, questionAmount, timeAtBeginning, System.currentTimeMillis());
+        float time = timerService.calculateTimeElapsedInSeconds(timer.timeAtBeginning(), System.currentTimeMillis());
+        displayStatistics(triviaGameData.getAnsweredQuestions(), triviaGameData.getQuestionAmount(), time);
     }
 }

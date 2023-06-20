@@ -16,10 +16,10 @@ class TriviaApi {
     private static final int MAX_API_TRIES = 3;
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    private final String[] triviaTypes;
+    private final TriviaTypes triviaTypes;
 
     public TriviaApi(String[] triviaTypes) {
-        this.triviaTypes = triviaTypes;
+        this.triviaTypes = new TriviaTypes(triviaTypes);
     }
 
     public TriviaQuestion getTriviaQuestion() {
@@ -55,7 +55,8 @@ class TriviaApi {
     }
 
     private String getRandomTriviaType() {
+        String[] types = triviaTypes.triviaTypes();
         Random rng = new Random();
-        return triviaTypes[rng.nextInt(triviaTypes.length)];
+        return types[rng.nextInt(types.length)];
     }
 }

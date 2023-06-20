@@ -17,10 +17,14 @@ class TextAndASCIIArt {
         keyboard.next();
     }
 
+    public static void displayQuestion(String triviaQuestion, int answeredQuestions) {
+        System.out.printf("-Question %d. %s\n", answeredQuestions + 1, triviaQuestion);
+    }
+
     public static void displayPossibleAnswers(List<Long> possibleAnswers) {
         System.out.println("--Possible answers:");
         for (int i = 0; i < possibleAnswers.size(); i++) {
-            System.out.println("---" + (i + 1) + ": " + possibleAnswers.get(i));
+            System.out.printf("--- %d: %s\n", i + 1, possibleAnswers.get(i));
         }
     }
 
@@ -53,24 +57,16 @@ class TextAndASCIIArt {
                 """);
     }
 
-    public static void displayLastAnswer(TriviaQuestion answer) {
+    public static void displayLastAnswer(TriviaQuestion triviaQuestion) {
         System.out.println("-Last trivia was:");
-        System.out.println("--Question: " + answer.getTriviaQuestion());
-        System.out.println("--Correct answer: " + answer.getNumber());
-        System.out.println("--Your answer: " + answer.getUserAnswer());
+        System.out.println("--Question: " + triviaQuestion.getTriviaQuestion());
+        System.out.println("--Correct answer: " + triviaQuestion.getNumber());
+        System.out.println("--Your answer: " + triviaQuestion.getUserAnswer());
     }
 
-    public static void displayStatistics(int answerAmount, int questionAmount, long start, long end) {
-        if (answerAmount < questionAmount) {
-            answerAmount--;
-        }
+    public static void displayStatistics(int answerAmount, int questionAmount, float time) {
         System.out.println("-STATISTICS:");
-        System.out.println("--Out of " + questionAmount + " questions, you answered " + answerAmount + " correctly");
-        System.out.println("--It took you " + calculateTimeElapsed(start, end) + " seconds");
-    }
-
-    private static float calculateTimeElapsed(long start, long end) {
-        float msec = end - start;
-        return msec / 1000f;
+        System.out.printf("--Out of %s questions, you answered %d correctly\n", questionAmount, answerAmount);
+        System.out.printf("--It took you %.2f seconds\n", time);
     }
 }
