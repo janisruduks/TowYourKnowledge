@@ -35,16 +35,8 @@ class TriviaQuestion {
         return number;
     }
 
-    public void setNumber(long number) {
-        this.number = number;
-    }
-
     public boolean isFound() {
         return found;
-    }
-
-    public void setFound(boolean found) {
-        this.found = found;
     }
 
     public List<Long> getPossibleAnswers() {
@@ -53,10 +45,6 @@ class TriviaQuestion {
 
     public void setPossibleAnswers(List<Long> possibleAnswers) {
         this.possibleAnswers = possibleAnswers;
-    }
-
-    public int getPossibleAnswerCount() {
-        return possibleAnswerCount;
     }
 
     public void setPossibleAnswerCount(int possibleAnswerCount) {

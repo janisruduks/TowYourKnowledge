@@ -11,7 +11,7 @@ public class TriviaGame {
 
     private final Scanner keyboard = new Scanner(System.in);
     private final TriviaApi triviaApi;
-    private final TriviaGameData triviaGameData;
+    private final TriviaGameData gameData;
     private final TriviaQuestionService triviaQuestionService = new TriviaQuestionService();
     private final TimerService timerService = new TimerService();
     private Timer timer;
@@ -19,15 +19,14 @@ public class TriviaGame {
 
     public TriviaGame(String[] triviaTypes, int questionAmount, int possibleAnswersCount) {
         this.triviaApi = new TriviaApi(triviaTypes);
-        this.triviaGameData = new TriviaGameData(questionAmount, possibleAnswersCount);
+        this.gameData = new TriviaGameData(questionAmount, possibleAnswersCount);
     }
 
     public void start() {
-        welcomeUser(triviaGameData.getQuestionAmount());
+        welcomeUser(gameData.getQuestionAmount());
         promptToStartGame(keyboard);
         timer = new Timer(System.currentTimeMillis());
-        while (!triviaGameData.isAnsweredWrong()
-                && triviaGameData.getAnsweredQuestions() != triviaGameData.getQuestionAmount()) {
+        while (!(gameData.isAnsweredWrong() || gameData.getAnsweredQuestions() == gameData.getQuestionAmount())) {
             triviaQuestion = getUniqueTriviaQuestion();
             triviaQuestion.setTriviaQuestion(setFormattedTriviaText());
             answerTheQuestion();
@@ -45,22 +44,22 @@ public class TriviaGame {
         TriviaQuestion triviaQuestion;
         do {
             triviaQuestion = triviaApi.getTriviaQuestion();
-        } while (!triviaGameData.addQuestionIfUnique(triviaQuestion));
+        } while (!gameData.addQuestionIfUnique(triviaQuestion));
         return triviaQuestion;
     }
 
     private void answerTheQuestion() {
-        displayQuestion(triviaQuestion.getTriviaQuestion(), triviaGameData.getAnsweredQuestions());
+        displayQuestion(triviaQuestion.getTriviaQuestion(), gameData.getAnsweredQuestions());
         prepareAndDisplayAnswers();
         updateQuestion();
         updateTriviaQuestionStatus();
     }
 
     private void prepareAndDisplayAnswers() {
-        triviaQuestion.setPossibleAnswerCount(triviaGameData.getPossibleAnswerCount());
+        triviaQuestion.setPossibleAnswerCount(gameData.getPossibleAnswerCount());
         List<Long> uniqueAnswers = triviaQuestionService.getUniquePossibleAnswers(
                 triviaQuestion.getNumber(),
-                triviaGameData.getPossibleAnswerCount()
+                gameData.getPossibleAnswerCount()
         );
         triviaQuestion.setPossibleAnswers(uniqueAnswers);
         displayPossibleAnswers(triviaQuestion.getPossibleAnswers());
@@ -88,20 +87,20 @@ public class TriviaGame {
 
     private void updateTriviaQuestionStatus() {
         if (triviaQuestion.getUserAnswer() == triviaQuestion.getNumber()) {
-            triviaGameData.setAnsweredQuestions(triviaGameData.getAnsweredQuestions() + 1);
+            gameData.setAnsweredQuestions(gameData.getAnsweredQuestions() + 1);
         } else {
-            triviaGameData.setAnsweredWrong(true);
+            gameData.setAnsweredWrong(true);
         }
     }
 
     private void endGame() {
-        if (triviaGameData.getAnsweredQuestions() == triviaGameData.getQuestionAmount()) {
+        if (gameData.getAnsweredQuestions() == gameData.getQuestionAmount()) {
             displayVictoryMessage();
         } else {
             displayDefeatMessage();
             displayLastAnswer(triviaQuestion);
         }
         float time = timerService.calculateTimeElapsedInSeconds(timer.timeAtBeginning(), System.currentTimeMillis());
-        displayStatistics(triviaGameData.getAnsweredQuestions(), triviaGameData.getQuestionAmount(), time);
+        displayStatistics(gameData.getAnsweredQuestions(), gameData.getQuestionAmount(), time);
     }
 }
